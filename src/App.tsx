@@ -6,7 +6,8 @@ function App() {
   return (
     <div className="App">
       <NavbarLogin />
-      <Greeting />
+      <Greeting name="Peet" age={23} country="Thailand" />
+      <Greeting name="Dodo" age={24} country="Thailand" />
     </div>
   )
 }
