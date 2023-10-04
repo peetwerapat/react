@@ -1,10 +1,9 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useState } from 'react'
 import './App.css'
 import Greeting from './components/Greeting'
 import NavbarLogin from './components/NavbarLogin'
 import Post from './components/Post'
-import { CreatePostDTO, PostDTO } from './types/dto'
-import axios from 'axios'
+import usePosts from './hooks/usePosts'
 
 // const initialPosts: PostDTO[] = [
 //   {
@@ -28,53 +27,21 @@ import axios from 'axios'
 // ]
 
 function App() {
-  const [posts, setPosts] = useState<PostDTO[] | null>(null)
+  const { posts, isLoading, isSubmitting, createPost } = usePosts()
   const [newTitle, setNewTitle] = useState<string>('')
   const [newBody, setNewBody] = useState<string>('')
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-      try {
-        const res = await axios.get<PostDTO[]>('https://jsonplaceholder.typicode.com/posts')
-
-        setPosts(res.data)
-      } catch (err) {
-        console.error(err)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
 
-    if (!posts) return
-
-    setIsSubmitting(true)
-
     try {
-      const res2 = await axios.post<CreatePostDTO[]>('https://jsonplaceholder.typicode.com/posts', {
-        userId: Math.floor(Math.random() * 1000),
-        title: newTitle,
-        body: newBody,
-      })
+      await createPost(newTitle, newBody)
 
-      console.log(res2.data)
+      setNewTitle('')
+      setNewBody('')
     } catch (err) {
-      console.log(err)
-    } finally {
-      setIsSubmitting(false)
+      console.error(err)
     }
-
-    // * Clear form after set posts
-    setNewTitle('')
-    setNewBody('')
   }
 
   if (isLoading) return <h1>Loading...</h1>
