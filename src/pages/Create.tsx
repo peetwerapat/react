@@ -4,7 +4,7 @@ import classes from './Create.module.css'
 import { useNavigate } from 'react-router-dom'
 
 const Create = () => {
-  const { isLoading, isSubmitting, createPost } = usePosts()
+  const { isSubmitting, createPost } = usePosts()
   const navigate = useNavigate()
   const [newTitle, setNewTitle] = useState<string>('')
   const [newBody, setNewBody] = useState<string>('')
@@ -23,8 +23,6 @@ const Create = () => {
       console.error(err)
     }
   }
-
-  if (isLoading) return <h1>Loading...</h1>
 
   return (
     <form className={classes.postForm} onSubmit={handleSubmit}>
